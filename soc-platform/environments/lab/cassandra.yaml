@@ -1,0 +1,20 @@
+global:
+  security:
+    allowInsecureImages: true
+image:
+  registry: docker.io
+  repository: bitnamilegacy/cassandra
+replicaCount: 1
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
+persistence:
+  enabled: true
+  size: "10Gi"
+jvm:
+  maxHeapSize: "1024M"
+  newHeapSize: "256M"

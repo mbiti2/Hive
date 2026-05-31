@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cortex.fullname" . }}-config
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  application.conf: |
+    play.http.secret.key="${APPLICATION_SECRET}"
+    
+    search {
+      index = cortex
+      uri = "{{ if .Values.elasticsearch.ssl }}https{{ else }}http{{ end }}://{{ .Values.elasticsearch.host }}:{{ .Values.elasticsearch.port }}"
+      {{- if .Values.elasticsearch.username }}
+      username = "{{ .Values.elasticsearch.username }}"
+      password = "${ELASTICSEARCH_PASSWORD}"
+      {{- end }}
+    }
+
+    analyzer {
+      urls = [
+        "{{ .Values.analyzers.path }}"
+      ]
+    }
+
+    responder {
+      urls = [
+        "{{ .Values.analyzers.respondersPath }}"
+      ]
+    }

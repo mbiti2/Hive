@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "thehive.fullname" . }}-config
+  labels:
+    app.kubernetes.io/name: {{ include "thehive.name" . }}
+    helm.sh/chart: {{ include "thehive.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  application.conf: |
+    play.http.secret.key="${APPLICATION_SECRET}"
+    
+    db.janusgraph {
+      storage.backend = cql
+      storage.hostname = ["{{ .Values.cassandra.host }}"]
+      storage.port = {{ .Values.cassandra.port }}
+      storage.cql.keyspace = thehive
+      # Set to false to avoid keyspace recreation issues in some envs, but true for init
+      storage.cql.local-datacenter = "datacenter1"
+    }
+
+    storage {
+      provider = localfs
+      localfs.directory = /opt/thp/thehive/data/files
+    }
+
+    index.search {
+      backend = elasticsearch
+      hostname = ["{{ .Values.elasticsearch.host }}"]
+      port = {{ .Values.elasticsearch.port }}
+      index-name = thehive
+      {{- if .Values.elasticsearch.ssl }}
+      scheme = https
+      {{- end }}
+      {{- if .Values.elasticsearch.username }}
+      username = "{{ .Values.elasticsearch.username }}"
+      password = "${ELASTICSEARCH_PASSWORD}"
+      {{- end }}
+    }
