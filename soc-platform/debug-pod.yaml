@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-curl
+  namespace: soc
+spec:
+  containers:
+  - name: debug
+    image: alpine/curl
+    command: ["sleep", "3600"]

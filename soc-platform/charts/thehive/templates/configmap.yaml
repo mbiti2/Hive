@@ -9,15 +9,34 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   application.conf: |
-    play.http.secret.key="${APPLICATION_SECRET}"
-    
+    play.http.secret.key="{{ .Values.application.secret }}"
+
     db.janusgraph {
       storage.backend = cql
       storage.hostname = ["{{ .Values.cassandra.host }}"]
       storage.port = {{ .Values.cassandra.port }}
+      storage.username = "{{ .Values.cassandra.username }}"
+      storage.password = "{{ .Values.cassandra.password }}"
       storage.cql.keyspace = thehive
-      # Set to false to avoid keyspace recreation issues in some envs, but true for init
-      storage.cql.local-datacenter = "datacenter1"
+      storage.cql.local-datacenter = "{{ .Values.cassandra.localDatacenter }}"
+
+      index.search {
+        backend = elasticsearch
+        hostname = ["{{ .Values.elasticsearch.host }}"]
+        port = {{ .Values.elasticsearch.port }}
+        index-name = thehive
+        {{- if .Values.elasticsearch.ssl }}
+        scheme = https
+        elasticsearch.ssl.enabled = true
+        elasticsearch.ssl.disable-hostname-verification = true
+        elasticsearch.ssl.allow-self-signed-certificates = true
+        {{- end }}
+        {{- if .Values.elasticsearch.username }}
+        elasticsearch.http.auth.type = basic
+        elasticsearch.http.auth.basic.username = "{{ .Values.elasticsearch.username }}"
+        elasticsearch.http.auth.basic.password = "{{ .Values.elasticsearch.password }}"
+        {{- end }}
+      }
     }
 
     storage {
@@ -25,16 +44,7 @@ data:
       localfs.directory = /opt/thp/thehive/data/files
     }
 
-    index.search {
-      backend = elasticsearch
-      hostname = ["{{ .Values.elasticsearch.host }}"]
-      port = {{ .Values.elasticsearch.port }}
-      index-name = thehive
-      {{- if .Values.elasticsearch.ssl }}
-      scheme = https
-      {{- end }}
-      {{- if .Values.elasticsearch.username }}
-      username = "{{ .Values.elasticsearch.username }}"
-      password = "${ELASTICSEARCH_PASSWORD}"
-      {{- end }}
-    }
+    {{- if .Values.search.acceptAnyCertificate }}
+    // Bypass SSL certificate validation for the Wazuh indexer (lab/dev only)
+    play.ws.ssl.loose.acceptAnyCertificate = true
+    {{- end }}

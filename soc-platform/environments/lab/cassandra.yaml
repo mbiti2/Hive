@@ -4,6 +4,9 @@ global:
 image:
   registry: docker.io
   repository: bitnamilegacy/cassandra
+dbUser:
+  user: cassandra
+  password: "cassandra_secret_2026"
 replicaCount: 1
 resources:
   requests:

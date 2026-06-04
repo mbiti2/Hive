@@ -2,83 +2,12 @@
 
 # This file contains overrides for a lab/development environment.
 # It uses smaller resource limits and sizes appropriate for local clusters like k3s.
-
-# Cassandra Configuration (Bitnami Chart)
-cassandra:
-  replicaCount: 1
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "1Gi"
-    limits:
-      cpu: "1"
-      memory: "2Gi"
-  persistence:
-    enabled: true
-    size: "10Gi"
-  jvm:
-    maxHeapSize: "1024M"
-    newHeapSize: "256M"
-
-thehive:
-  replicaCount: 1
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "1Gi"
-    limits:
-      cpu: "1"
-      memory: "2Gi"
-  elasticsearch:
-    # We use the existing Wazuh indexer
-    host: wazuh-wazuh-helm-indexer-api.wazuh.svc.cluster.local
-    port: 9200
-    ssl: true
-    username: "admin"
-    password: "admin" # Matches the default wazuh-indexer password
-  ingress:
-    enabled: true
-    className: "traefik"
-    hosts:
-      - host: thehive.lab.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-
-cortex:
-  replicaCount: 1
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "512Mi"
-    limits:
-      cpu: "500m"
-      memory: "1Gi"
-  elasticsearch:
-    # We use the existing Wazuh indexer
-    host: wazuh-wazuh-helm-indexer-api.wazuh.svc.cluster.local
-    port: 9200
-    ssl: true
-    username: "admin"
-    password: "admin"
-  ingress:
-    enabled: true
-    className: "traefik"
-    hosts:
-      - host: cortex.lab.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-
-webhook-adapter:
-  replicaCount: 1
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "128Mi"
-    limits:
-      cpu: "200m"
-      memory: "256Mi"
-  thehive:
-    url: "http://thehive:9000"
-    apikey: "REPLACE_WITH_THEHIVE_API_KEY"
+#
+# NOTE: Per-chart overrides have been moved to separate files:
+#   - environments/lab/thehive.yaml
+#   - environments/lab/cortex.yaml
+#   - environments/lab/webhook-adapter.yaml
+#
+# Cassandra configuration is in environments/lab/cassandra.yaml
+# This file is kept for chart-specific values that could be shared
+# across charts (if any in the future).

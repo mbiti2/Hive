@@ -1,0 +1,37 @@
+# environments/lab/thehive.yaml
+# Overrides for the TheHive chart in lab/development environment.
+# Values are at top level to match the chart's values.yaml structure.
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
+
+cassandra:
+  username: "cassandra"
+  password: "cassandra_secret_2026"
+
+elasticsearch:
+  # We use the existing Wazuh indexer
+  host: wazuh-wazuh-helm-indexer-api.wazuh.svc.cluster.local
+  port: 9200
+  ssl: true
+  username: "admin"
+  password: "admin"
+
+search:
+  acceptAnyCertificate: true
+
+ingress:
+  enabled: true
+  className: "traefik"
+  hosts:
+    - host: thehive.lab.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific

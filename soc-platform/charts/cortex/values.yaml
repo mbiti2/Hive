@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: strangebee/cortex
+  repository: thehiveproject/cortex
   pullPolicy: IfNotPresent
   tag: "3.1.7"
 
@@ -66,6 +66,9 @@ elasticsearch:
   ssl: false
   username: ""
   password: ""
+
+search:
+  acceptAnyCertificate: false
 
 application:
   secret: "changeme-must-be-at-least-64-bytes-long-for-cortex-to-start-properly"

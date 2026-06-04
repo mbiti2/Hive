@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: strangebee/thehive
   pullPolicy: IfNotPresent
-  tag: "5.6.0"
+  tag: "5"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -59,6 +59,10 @@ persistence:
 cassandra:
   host: "cassandra.soc.svc.cluster.local"
   port: 9042
+  username: "cassandra"
+  password: ""
+  # Set local-datacenter to match the Cassandra cluster's datacenter name
+  localDatacenter: "datacenter1"
 
 elasticsearch:
   host: "elasticsearch"
@@ -69,3 +73,9 @@ elasticsearch:
 
 application:
   secret: "changeme-must-be-at-least-64-bytes-long-for-thehive-to-start-properly"
+
+# For lab environments where the Wazuh indexer uses self-signed certs,
+# set acceptAnyCertificate to true to skip SSL verification.
+# In production, mount the Wazuh root CA instead.
+search:
+  acceptAnyCertificate: false

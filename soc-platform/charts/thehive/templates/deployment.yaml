@@ -45,6 +45,13 @@ spec:
                   name: {{ include "thehive.fullname" . }}-secret
                   key: elasticsearch-password
             {{- end }}
+            {{- if .Values.cassandra.password }}
+            - name: CASSANDRA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "thehive.fullname" . }}-secret
+                  key: cassandra-password
+            {{- end }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/thehive/application.conf

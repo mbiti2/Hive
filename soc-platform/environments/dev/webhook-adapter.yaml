@@ -1,0 +1,9 @@
+# environments/dev/webhook-adapter.yaml
+# Overrides for the Webhook Adapter chart in dev environment.
+# Values are at top level to match the chart's values.yaml structure.
+
+replicaCount: 1
+
+thehive:
+  url: "http://thehive:9000"
+  apikey: "REPLACE_WITH_THEHIVE_API_KEY"

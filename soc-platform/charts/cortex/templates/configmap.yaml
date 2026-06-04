@@ -9,15 +9,21 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   application.conf: |
-    play.http.secret.key="${APPLICATION_SECRET}"
-    
+    play.http.secret.key="{{ .Values.application.secret }}"
+
+    {{- if .Values.search.acceptAnyCertificate }}
+    // Bypass SSL certificate validation for the Wazuh indexer (lab/dev only)
+    play.ws.ssl.loose.acceptAnyCertificate = true
+    {{- end }}
+
     search {
       index = cortex
       uri = "{{ if .Values.elasticsearch.ssl }}https{{ else }}http{{ end }}://{{ .Values.elasticsearch.host }}:{{ .Values.elasticsearch.port }}"
       {{- if .Values.elasticsearch.username }}
       username = "{{ .Values.elasticsearch.username }}"
-      password = "${ELASTICSEARCH_PASSWORD}"
+      password = "{{ .Values.elasticsearch.password }}"
       {{- end }}
+      trust-all = true
     }
 
     analyzer {

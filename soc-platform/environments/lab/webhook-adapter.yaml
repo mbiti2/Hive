@@ -1,0 +1,17 @@
+# environments/lab/webhook-adapter.yaml
+# Overrides for the Webhook Adapter chart in lab/development environment.
+# Values are at top level to match the chart's values.yaml structure.
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+
+thehive:
+  url: "http://thehive:9000"
+  apikey: "xxcd8aJyOfc7SJhp2mHzPZI0KYKnXh4M"
